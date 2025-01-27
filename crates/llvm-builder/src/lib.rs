@@ -302,7 +302,6 @@ pub fn build(
     } else {
         anyhow::bail!("Unsupported target architecture");
     }
-
     crate::builtins::build(
         build_type,
         target_env,

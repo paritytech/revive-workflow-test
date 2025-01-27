@@ -1,5 +1,7 @@
 //! Utilities for compiling the LLVM compiler-rt builtins.
 
+use std::path::PathBuf;
+
 /// Static CFLAGS variable passed to the compiler building the compiler-rt builtins.
 const C_FLAGS: [&str; 6] = [
     "--target=riscv64",
@@ -42,26 +44,39 @@ fn cmake_dynamic_args(
         crate::LLVMPath::llvm_target_final()?
     };
 
+    let bin_suffix = if cfg!(target_os = "windows") {
+        ".exe"
+    } else {
+        ""
+    };
+
     let mut clang_path = llvm_target_host.to_path_buf();
-    clang_path.push("bin/clang");
+    clang_path.push("bin");
+    clang_path.push(format!("clang{}", bin_suffix));
 
     let mut clangxx_path = llvm_target_host.to_path_buf();
-    clangxx_path.push("bin/clang++");
+    clangxx_path.push("bin");
+    clangxx_path.push(format!("clang++{}", bin_suffix));
 
     let mut llvm_config_path = llvm_target_host.to_path_buf();
-    llvm_config_path.push("bin/llvm-config");
+    llvm_config_path.push("bin");
+    llvm_config_path.push(format!("llvm-config++{}", bin_suffix));
 
     let mut ar_path = llvm_target_host.to_path_buf();
-    ar_path.push("bin/llvm-ar");
+    ar_path.push("bin");
+    ar_path.push(format!("llvm-ar{}", bin_suffix));
 
     let mut nm_path = llvm_target_host.to_path_buf();
-    nm_path.push("bin/llvm-nm");
+    nm_path.push("bin");
+    nm_path.push(format!("llvm-nm{}", bin_suffix));
 
     let mut ranlib_path = llvm_target_host.to_path_buf();
-    ranlib_path.push("bin/llvm-ranlib");
+    ranlib_path.push("bin");
+    ranlib_path.push(format!("llvm-ranlib{}", bin_suffix));
 
     let mut linker_path = llvm_target_host.to_path_buf();
-    linker_path.push("bin/ld.lld");
+    linker_path.push("bin");
+    linker_path.push(format!("ld.lld{}", bin_suffix));
 
     Ok([
         format!(
