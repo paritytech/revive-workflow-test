@@ -219,7 +219,7 @@ jobs:
 
       - name: build musl
         run: |
-          mkdir recolc-out
+          mkdir resolc-out
           docker run -v $PWD:/opt/revive messense/rust-musl-cross:x86_64-musl /bin/bash -c "
            cd /opt/revive
            apt update && apt upgrade -y && apt install -y pkg-config
