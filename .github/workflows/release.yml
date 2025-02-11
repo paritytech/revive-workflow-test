@@ -131,6 +131,13 @@ jobs:
           path: target-llvm/gnu/target-final
           key: llvm-linux-gnu-${{ hashFiles('crates/solidity/**') }}
 
+      - name: llvm-musl-cache restore
+        id: llvm-musl-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: target-llvm/musl/target-final
+          key: llvm-linux-gnu-${{ hashFiles('crates/solidity/**') }}
+
       - name: llvm-emscripten-cache restore
         id: llvm-emscripten-cache
         uses: actions/cache/restore@v4
@@ -148,6 +155,12 @@ jobs:
           revive-llvm clone
           revive-llvm build --llvm-projects lld --llvm-projects clang
 
+      - name: Build musl LLVM
+        if: steps.llvm-musl-cache.outputs.cache-hit != 'true'
+        run: |
+          revive-llvm --target-env musl clone
+          revive-llvm --target-env musl build --llvm-projects lld --llvm-projects clang
+
       - name: Build emscripten LLVM
         if: steps.llvm-emscripten-cache.outputs.cache-hit != 'true'
         run: |
@@ -162,6 +175,12 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: target-llvm/gnu/target-final
+          key: llvm-linux-gnu-${{ hashFiles('crates/solidity/**') }}
+
+      - name: llvm-musl-cache save
+        uses: actions/cache/save@v4
+        with:
+          path: target-llvm/musl/target-final
           key: llvm-linux-gnu-${{ hashFiles('crates/solidity/**') }}
 
       - name: llvm-emscripten-cache save
@@ -190,11 +209,19 @@ jobs:
           chmod +x solc
           echo "$PWD" >> $GITHUB_PATH
 
-      - name: build revive
+      - name: build musl
         run: |
-          export LLVM_SYS_181_PREFIX=$PWD/target-llvm/gnu/target-final
-          make install-bin
+          mkdir recolc-out
+          docker run -v $PWD:/opt/revive messense/rust-musl-cross:x86_64-musl /bin/bash -c "
+           cd /opt/revive
+           apt update && apt upgrade -y && apt install -y pkg-config
+           export LLVM_SYS_181_PREFIX=/opt/revive/target-llvm/musl/target-final
+           make install-bin
+           cp /root/.cargo/bin/resolc /opt/revive/resolc-out/resolc
+           "
 
+      - name: build wasm
+        run: |
           export REVIVE_LLVM_TARGET_PREFIX=$PWD/target-llvm/emscripten/target-final
           source emsdk/emsdk_env.sh
           rustup target add wasm32-unknown-emscripten
@@ -205,6 +232,7 @@ jobs:
       - name: pack
         run: |
           tar -czf llvm-linux-gnu.tar.gz target-llvm/gnu/target-final
+          tar -czf llvm-linux-musl.tar.gz target-llvm/musl/target-final
           tar -czf llvm-linux-emscripten.tar.gz target-llvm/emscripten/target-final
 
       - name: upload resolc
@@ -213,7 +241,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./target/release/resolc
+          asset_path: ./resolc-out/resolc
           asset_name: resolc
           asset_content_type: application/octet-stream
 
@@ -245,6 +273,16 @@ jobs:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ./llvm-linux-gnu.tar.gz
           asset_name: llvm-linux-gnu.tar.gz
+          asset_content_type: application/octet-stream
+
+      - name: upload llvm-linux-musl.tar.gz
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./llvm-linux-musl.tar.gz
+          asset_name: llvm-linux-musl.tar.gz
           asset_content_type: application/octet-stream
 
       - name: upload llvm-linux-emscripten.tar.gz
