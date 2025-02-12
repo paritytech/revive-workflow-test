@@ -202,7 +202,6 @@ jobs:
 
       - name: build wasm
         run: |
-          export LLVM_SYS_181_PREFIX=$PWD/target-llvm/gnu/target-final
           export REVIVE_LLVM_TARGET_PREFIX=$PWD/target-llvm/emscripten/target-final
           source emsdk/emsdk_env.sh
           rustup target add wasm32-unknown-emscripten
