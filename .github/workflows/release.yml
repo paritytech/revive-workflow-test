@@ -124,13 +124,6 @@ jobs:
 
       # Restore cache
 
-      - name: llvm-gnu-cache restore
-        id: llvm-gnu-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: target-llvm/gnu/target-final
-          key: llvm-linux-gnu-${{ hashFiles('crates/solidity/**') }}
-
       - name: llvm-musl-cache restore
         id: llvm-musl-cache
         uses: actions/cache/restore@v4
@@ -149,12 +142,6 @@ jobs:
 
       # Build LLVM
 
-      - name: Build host LLVM
-        if: steps.llvm-gnu-cache.outputs.cache-hit != 'true'
-        run: |
-          revive-llvm clone
-          revive-llvm build --llvm-projects lld --llvm-projects clang
-
       - name: Build musl LLVM
         if: steps.llvm-musl-cache.outputs.cache-hit != 'true'
         run: |
@@ -169,13 +156,6 @@ jobs:
           revive-llvm --target-env emscripten build --llvm-projects lld
 
       # Save cache
-
-      - name: llvm-gnu-cache save
-        if: steps.llvm-gnu-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: target-llvm/gnu/target-final
-          key: llvm-linux-gnu-${{ hashFiles('crates/solidity/**') }}
 
       - name: llvm-musl-cache save
         if: steps.llvm-musl-cache.outputs.cache-hit != 'true'
@@ -238,12 +218,6 @@ jobs:
 
       # Upload
 
-      - name: pack
-        run: |
-          tar -czf llvm-linux-gnu.tar.gz target-llvm/gnu/target-final
-          tar -czf llvm-linux-musl.tar.gz target-llvm/musl/target-final
-          tar -czf llvm-linux-emscripten.tar.gz target-llvm/emscripten/target-final
-
       - name: upload resolc
         uses: actions/upload-release-asset@v1
         env:
@@ -272,34 +246,4 @@ jobs:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ./target/wasm32-unknown-emscripten/release/resolc.wasm
           asset_name: resolc.wasm
-          asset_content_type: application/octet-stream
-
-      - name: upload llvm-linux-gnu.tar.gz
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./llvm-linux-gnu.tar.gz
-          asset_name: llvm-linux-gnu.tar.gz
-          asset_content_type: application/octet-stream
-
-      - name: upload llvm-linux-musl.tar.gz
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./llvm-linux-musl.tar.gz
-          asset_name: llvm-linux-musl.tar.gz
-          asset_content_type: application/octet-stream
-
-      - name: upload llvm-linux-emscripten.tar.gz
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./llvm-linux-emscripten.tar.gz
-          asset_name: llvm-linux-emscripten.tar.gz
           asset_content_type: application/octet-stream
