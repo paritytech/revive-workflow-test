@@ -234,3 +234,13 @@ jobs:
           asset_path: ./target/wasm32-unknown-emscripten/release/resolc.wasm
           asset_name: resolc.wasm
           asset_content_type: application/octet-stream
+
+      - name: upload resolc_web.js
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./target/wasm32-unknown-emscripten/release/resolc_web.js
+          asset_name: resolc_web.js
+          asset_content_type: application/octet-stream
