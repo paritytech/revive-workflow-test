@@ -19,7 +19,8 @@ jobs:
           curl -o solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
           chmod +x solc
       - run: |
-          ./solc --bin crates/integration/contracts/flipper.sol
+          ./solc --bin crates/integration/contracts/flipper.sol | tee test.txt
+      - run: cat test.txt
 
   test-parity: 
     runs-on: parity-large
@@ -214,12 +215,6 @@ jobs:
 
       # Build revive
 
-      - name: download solc
-        run: |
-          curl -o solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
-          chmod +x solc
-          echo "$PWD" >> $GITHUB_PATH
-
       - name: build musl
         run: |
           mkdir resolc-out
@@ -230,6 +225,11 @@ jobs:
            make install-bin
            cp /root/.cargo/bin/resolc /opt/revive/resolc-out/resolc
            "
+      - name: download solc
+        run: |
+          curl -o solc/solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
+          chmod +x solc/solc
+          echo "$(pwd)/solc/" >> $GITHUB_PATH      
       - name: check musl
         run: |
           solc --help
