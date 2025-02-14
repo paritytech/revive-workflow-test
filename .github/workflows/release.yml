@@ -79,7 +79,12 @@ jobs:
       - uses: actions/checkout@v4
       - id: get-notes
         run: |
-          echo "releaseNotes=$(sed '/^## v0.1.0-dev.10/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d')" >> $GITHUB_OUTPUT
+          notes=$(sed '/^## ${{ needs.tag.outputs.PKG_VER }}/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d')
+          {
+            echo 'releaseNotes<<EOF'
+            exho $notes
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
 
   create-release:
     if: ${{ needs.tag.outputs.TAG == 'new' }}
