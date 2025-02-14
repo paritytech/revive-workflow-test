@@ -17,7 +17,9 @@ jobs:
       - run: |
           curl -o solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
           chmod +x solc
-      - run: ./solc asdfg
+      - run: |
+          ./solc --version | cat > test.txt
+          cat test.txt
 
   test-parity: 
     runs-on: parity-large
@@ -25,7 +27,9 @@ jobs:
       - run: |
           curl -o solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
           chmod +x solc
-      - run: ./solc asdfg    
+      - run: |
+          ./solc --version | cat > test.txt
+          cat test.txt
 
   tag:
     runs-on: ubuntu-latest
