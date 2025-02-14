@@ -212,7 +212,7 @@ jobs:
            cp /root/.cargo/bin/resolc /opt/revive/resolc-out/resolc
            "
       - name: check musl
-        run:
+        run: |
           solc --help
           ./resolc-out/resolc --bin crates/integration/contracts/flipper.sol
 
