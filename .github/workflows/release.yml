@@ -76,6 +76,7 @@ jobs:
     outputs:
       releaseNotes: ${{ steps.get-notes.outputs.releaseNotes }}
     steps:
+      - uses: actions/checkout@v4
       - id: get-notes
         run: |
           notes=$(sed '/^## ${{ needs.tag.outputs.PKG_VER }}/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d')
