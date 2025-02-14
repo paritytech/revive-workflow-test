@@ -11,6 +11,22 @@ env:
 
 jobs:
 
+  test-ubuntu: 
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -o solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
+          chmod +x solc
+          ./solc --help
+
+  test-parity: 
+    runs-on: parity-large
+    steps:
+      - run: |
+          curl -o solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
+          chmod +x solc
+          ./solc --help          
+
   tag:
     runs-on: ubuntu-latest
     permissions:
