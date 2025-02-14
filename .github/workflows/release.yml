@@ -82,7 +82,7 @@ jobs:
           notes=$(sed '/^## ${{ needs.tag.outputs.PKG_VER }}/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d')
           {
             echo 'releaseNotes<<EOF'
-            exho $notes
+            echo $notes
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
