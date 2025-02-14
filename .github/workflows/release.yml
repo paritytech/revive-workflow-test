@@ -80,7 +80,6 @@ jobs:
       - id: get-notes
         run: |
           notes=$(sed '/^## ${{ needs.tag.outputs.PKG_VER }}/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d')
-          echo $notes
           echo "releaseNotes=$notes" >> $GITHUB_OUTPUT
 
   create-release:
