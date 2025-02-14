@@ -7,7 +7,7 @@ on:
 
 env:
   #rust-musl-cross:x86_64-musl
-  RUST_MUSL_CROSS_IMAGE: messense/rust-musl-cross:@sha256:68b86bc7cb2867259e6b233415a665ff4469c28b57763e78c3bfea1c68091561
+  RUST_MUSL_CROSS_IMAGE: messense/rust-musl-cross@sha256:68b86bc7cb2867259e6b233415a665ff4469c28b57763e78c3bfea1c68091561
 
 jobs:
 
@@ -79,8 +79,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: get-notes
         run: |
-          notes=$(sed '/^## ${{ needs.tag.outputs.PKG_VER }}/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d')
-          echo 'releaseNotes="$notes"' >> $GITHUB_OUTPUT
+          echo "releaseNotes=$(sed '/^## v0.1.0-dev.10/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d')" >> $GITHUB_OUTPUT
 
   create-release:
     if: ${{ needs.tag.outputs.TAG == 'new' }}
@@ -197,6 +196,7 @@ jobs:
           curl -o solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
           chmod +x solc
           echo "$PWD" >> $GITHUB_PATH
+
       - name: build musl
         run: |
           mkdir resolc-out
