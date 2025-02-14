@@ -79,10 +79,9 @@ jobs:
       - uses: actions/checkout@v4
       - id: get-notes
         run: |
-          notes=$(sed '/^## ${{ needs.tag.outputs.PKG_VER }}/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d')
           {
             echo 'releaseNotes<<EOF'
-            echo $notes
+            sed '/^## ${{ needs.tag.outputs.PKG_VER }}/,/^## v/!d' CHANGELOG.md | sed -e '1d' -e '$d'
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
@@ -212,6 +211,9 @@ jobs:
            make install-bin
            cp /root/.cargo/bin/resolc /opt/revive/resolc-out/resolc
            "
+      - name: check musl
+        run:
+          ./resolc-out/resolc --bin crates/integration/contracts/flipper.sol
 
       - name: build wasm
         run: |
