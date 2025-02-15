@@ -122,7 +122,7 @@ jobs:
       - name: install linux deps
         run: |
           sudo apt-get update && sudo apt-get install -y cmake ninja-build \
-          curl git libssl-dev pkg-config clang lld nodejs npm musl
+          curl git libssl-dev pkg-config clang lld musl
 
       - name: Install Rust stable toolchain
         uses: actions-rs/toolchain@v1
@@ -215,6 +215,11 @@ jobs:
           result=$(./resolc-out/resolc --bin crates/integration/contracts/flipper.sol)
           echo $result
           if [[ $result == *'0x50564d'* ]]; then exit 0; else exit 1; fi
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"          
 
       - name: build wasm
         run: |
