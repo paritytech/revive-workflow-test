@@ -232,11 +232,9 @@ jobs:
           chmod +x solc
           echo $PWD >> $GITHUB_PATH
           PATH=$PWD:$PATH
-          ./resolc-out/resolc --bin crates/integration/contracts/flipper.sol | sed -n 2p
-          echo "-------"
-          result=$(./resolc-out/resolc --bin crates/integration/contracts/flipper.sol | sed -n 2p)
+          result=$(./resolc-out/resolc --bin crates/integration/contracts/flipper.sol)
           echo $result
-          if [[ $result == 0x50564d* ]]; then exit 0; else exit 1; fi
+          if [[ $result == *'0x50564d'* ]]; then exit 0; else exit 1; fi
 
       - name: build wasm
         run: |
