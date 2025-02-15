@@ -257,8 +257,7 @@ jobs:
           let bytecode = out.contracts['MyContract.sol']['MyContract'].evm.bytecode.object
           console.log(bytecode);
 
-          if(!bytecode.startsWith('50564d'))
-            exit 1;
+          if(!bytecode.startsWith('50564d')) { process.exit(1); }
           "
 
       # Upload
