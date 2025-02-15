@@ -228,10 +228,10 @@ jobs:
 
       - name: check musl
         run: |
-          curl -sSLo solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
-          chmod +x solc
-          echo $PWD >> $GITHUB_PATH
-          PATH=$PWD:$PATH
+          mkdir solc
+          curl -sSLo solc/solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
+          chmod +x solc/solc
+          PATH=$PWD/solc:$PATH
           result=$(./resolc-out/resolc --bin crates/integration/contracts/flipper.sol)
           echo $result
           if [[ $result == *'0x50564d'* ]]; then exit 0; else exit 1; fi
@@ -246,8 +246,7 @@ jobs:
 
       - name: check wasm
         run: |
-          mkdir solc
-          curl -sSLo solc/solc https://github.com/ethereum/solidity/releases/download/v0.8.28/soljson.js
+          curl -sSLo solc/soljson.js https://github.com/ethereum/solidity/releases/download/v0.8.28/soljson.js
           node -e "
           const soljson = require('solc/soljson');
           const createRevive = require('./target/wasm32-unknown-emscripten/release/resolc.js');
