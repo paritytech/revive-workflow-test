@@ -225,14 +225,15 @@ jobs:
            make install-bin
            cp /root/.cargo/bin/resolc /opt/revive/resolc-out/resolc
            "
-      - name: download solc
+
+      - name: check musl
         run: |
           curl -sSLo solc https://github.com/ethereum/solidity/releases/download/v0.8.28/solc-static-linux
           chmod +x solc
-          echo $PWD >> $GITHUB_PATH      
-      - name: check musl
-        run: |
-          ./resolc-out/resolc --bin crates/integration/contracts/flipper.sol
+          echo $PWD >> $GITHUB_PATH          
+          result=$(./resolc-out/resolc --bin crates/integration/contracts/flipper.sol | sed -n 2p)
+          echo $result
+          if [[ $result == 0x50564d* ]]; then exit 0; else exit 1; fi
 
       - name: build wasm
         run: |
@@ -241,6 +242,43 @@ jobs:
           source emsdk/emsdk_env.sh
           rustup target add wasm32-unknown-emscripten
           make install-wasm
+
+      - name: check wasm
+        run: |
+          mkdir solc
+          curl -sSLo solc/solc https://github.com/ethereum/solidity/releases/download/v0.8.28/soljson.js
+          node -e "
+          const soljson = require('solc/soljson');
+          const createRevive = require('./target/wasm32-unknown-emscripten/release/resolc.js');
+          
+          const compiler = createRevive();
+          compiler.soljson = soljson;
+          
+          const standardJsonInput = 
+          {
+            sources: {
+              'MyContract.sol': {
+                content: 'pragma solidity ^0.8.0; contract MyContract { function greet() public pure returns (string memory) { return \'Hello\'; } }',
+              },
+            }
+          };
+          
+          compiler.writeToStdin(JSON.stringify(standardJsonInput));
+          compiler.callMain(['--standard-json']);
+          
+          // Collect output
+          const stdout = compiler.readFromStdout();
+          const stderr = compiler.readFromStderr();
+          
+          if (stderr) { console.error(stderr); process.exit(1); }
+          
+          let out = JSON.parse(stdout);
+          let bytecode = out.contracts['MyContract.sol']['MyContract'].evm.bytecode.object
+          console.log(bytecode);
+
+          if(!bytecode.startsWith('50564d'))
+            exit 1;
+          "
 
       # Upload
 
