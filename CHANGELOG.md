@@ -15,6 +15,7 @@ Supported `polkadot-sdk` rev: `274a781e8ca1a9432c7ec87593bd93214abbff50`
 {}
 
 <h1>H1</h1>
+<h2>H2</h2>
 
 ### Some other stuff
 
