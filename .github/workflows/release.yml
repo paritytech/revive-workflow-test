@@ -229,7 +229,7 @@ jobs:
     permissions:
       contents: write
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      upload_url: ${{ steps.create_release.outputs.result }}
     steps:
       - uses: actions/checkout@v4
 
@@ -266,17 +266,33 @@ jobs:
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
+
       - name: Create release
         id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: actions/create-release@v1
+        uses: actions/github-script@v7
         with:
-          tag_name: ${{ needs.tag.outputs.PKG_VER }}
-          release_name: ${{ needs.tag.outputs.PKG_VER }}
-          body: ${{ steps.get-notes.outputs.releaseNotes }}
-          draft: true
-          prerelease: true
+          result-encoding: string
+          script: |
+            let response = await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: needs.tag.outputs.PKG_VER,
+                body: steps.get-notes.outputs.releaseNotes
+                draft: true
+            });
+
+            return response.upload_url;
+      #- name: Create release
+      #  id: create_release
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  uses: actions/create-release@v1
+      #  with:
+      #    tag_name: ${{ needs.tag.outputs.PKG_VER }}
+      #    release_name: ${{ needs.tag.outputs.PKG_VER }}
+      #    body: ${{ steps.get-notes.outputs.releaseNotes }}
+      #    draft: true
+      #    prerelease: true
 
       - name: Log
         run: |
