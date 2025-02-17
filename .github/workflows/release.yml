@@ -269,7 +269,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag_name: process.env.version,
-                name: process.env.version
+                name: process.env.version,
                 body: process.env.releaseNotes,
                 draft: true
             });
