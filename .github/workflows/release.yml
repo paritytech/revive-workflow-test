@@ -273,6 +273,7 @@ jobs:
                 body: process.env.releaseNotes,
                 draft: true
             });
+            console.log(response);
             return response.upload_url;
 
       - name: Log
