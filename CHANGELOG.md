@@ -10,6 +10,26 @@ Supported `polkadot-sdk` rev: `274a781e8ca1a9432c7ec87593bd93214abbff50`
 - A bug causing incorrect loads from the emulated EVM linear memory.
 - A missing integer truncate after switching to 64bit.
 
+## v0.1.0-dev.12
+
+{}
+
+<h1>H1</h1>
+
+### Some other stuff
+
+`string`
+'string'
+"string"
+
+- 1
+- 2
+- 3
+
+```
+!@#$%^&*(){}[]`~
+```
+
 ## v0.1.0-dev.11
 
 ### Some stuff

@@ -35,7 +35,7 @@ jobs:
       - name: Versions
         id: versions
         run: |
-          export CURRENT_TAG=$(git describe --tags --abbrev=0)
+          export CURRENT_TAG=$(git describe --tags --abbrev=0 --exclude "llvm-*")
           export PKG_VER=v$(cat Cargo.toml | grep -A 5 package] | grep version | cut -d '=' -f 2 | tr -d '"' | tr -d " ")
           echo "Current tag $CURRENT_TAG"
           echo "Package version $PKG_VER"
