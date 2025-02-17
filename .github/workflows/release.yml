@@ -258,6 +258,9 @@ jobs:
 
       - name: Create release
         id: create_release
+        env:
+         releaseNotes: ${{ steps.get-notes.outputs.releaseNotes }}
+         version: ${{ needs.tag.outputs.PKG_VER }}
         uses: actions/github-script@v7
         with:
           result-encoding: string
@@ -265,8 +268,8 @@ jobs:
             let response = await github.rest.repos.createRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                tag_name: `${{ needs.tag.outputs.PKG_VER }}`,
-                body: `${{ steps.get-notes.outputs.releaseNotes }}`,
+                tag_name: process.env.version,
+                body: process.env.releaseNotes,
                 draft: true
             });
 
