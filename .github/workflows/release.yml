@@ -275,7 +275,7 @@ jobs:
                 tag_name: process.env.version,
                 name: process.env.version,
                 body: process.env.releaseNotes,
-                draft: true
+                draft: true,
                 prerelease: true
             });
             console.log(response);
