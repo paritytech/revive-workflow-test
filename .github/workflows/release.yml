@@ -276,6 +276,7 @@ jobs:
                 name: process.env.version,
                 body: process.env.releaseNotes,
                 draft: true
+                prerelease: true
             });
             console.log(response);
             return response.data.upload_url;
