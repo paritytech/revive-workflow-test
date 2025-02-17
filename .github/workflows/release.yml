@@ -274,7 +274,7 @@ jobs:
                 draft: true
             });
             console.log(response);
-            return response.upload_url;
+            return response.data.upload_url;
 
       - name: Log
         run: |
