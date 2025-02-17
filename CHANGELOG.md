@@ -10,6 +10,18 @@ Supported `polkadot-sdk` rev: `274a781e8ca1a9432c7ec87593bd93214abbff50`
 - A bug causing incorrect loads from the emulated EVM linear memory.
 - A missing integer truncate after switching to 64bit.
 
+## v0.1.0-dev.11
+
+### Some stuff
+
+`string`
+'string'
+"string"
+
+```
+!@#$%^&*(){}[]`~
+```
+
 ## v0.1.0-dev.10
 
 This is a development pre-release.
@@ -20,7 +32,7 @@ Supported `polkadot-sdk` rev: `274a781e8ca1a9432c7ec87593bd93214abbff50`
 - Support for the `coinbase` opcode.
 - The resolc web JS version.
 
-### Changed 
+### Changed
 - Missing the `--overwrite` flag emits an error instead of a warning.
 - The `resolc` executable prints the help by default.
 - Removed support for legacy EVM assembly (EVMLA) translation.
@@ -42,7 +54,7 @@ This is a development pre-release.
 
 ### Added
 
-### Changed 
+### Changed
 - Syscalls with more than 6 arguments now pack them into registers.
 
 ### Fixed
@@ -82,9 +94,9 @@ This is a development pre-release.
 - Calls forward maximum weight limits instead of 0, anticipating a change in polkadot-sdk where weight limits of 0 no longer interprets as uncapped limit.
 
 ### Fixed
-- A linker bug which was preventing certain contracts from linking with the PVM linker. 
+- A linker bug which was preventing certain contracts from linking with the PVM linker.
 - JS: Fix encoding conversion from JS string (UTF-16) to UTF-8.
-- The git commit hash slug is always displayed in the version string. 
+- The git commit hash slug is always displayed in the version string.
 
 ## v0.1.0-dev.6
 

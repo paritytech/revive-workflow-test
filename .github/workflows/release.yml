@@ -239,23 +239,12 @@ jobs:
         with:
           result-encoding: string
           script: |
-            try {
-              await github.rest.git.createRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: 'refs/tags/${{ needs.tag.outputs.PKG_VER }}',
-                sha: context.sha
-              })
-            } catch (err) {
-              if (err.status !== 422) throw err;
-              console.log("Tag already exists, updating")
-              await github.rest.git.updateRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: 'refs/tags/${{ needs.tag.outputs.PKG_VER }}',
-                sha: context.sha
-              });
-            }
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ needs.tag.outputs.PKG_VER }}',
+              sha: context.sha
+            })
 
       - name: get relese notes
         id: get-notes
@@ -276,8 +265,8 @@ jobs:
             let response = await github.rest.repos.createRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                tag_name: needs.tag.outputs.PKG_VER,
-                body: steps.get-notes.outputs.releaseNotes,
+                tag_name: ${{ needs.tag.outputs.PKG_VER }},
+                body: ${{ steps.get-notes.outputs.releaseNotes }},
                 draft: true
             });
 
