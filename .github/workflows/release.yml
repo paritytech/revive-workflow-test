@@ -269,28 +269,16 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag_name: process.env.version,
+                name: process.env.version
                 body: process.env.releaseNotes,
                 draft: true
             });
-
             return response.upload_url;
-      #- name: Create release
-      #  id: create_release
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #  uses: actions/create-release@v1
-      #  with:
-      #    tag_name: ${{ needs.tag.outputs.PKG_VER }}
-      #    release_name: ${{ needs.tag.outputs.PKG_VER }}
-      #    body: ${{ steps.get-notes.outputs.releaseNotes }}
-      #    draft: true
-      #    prerelease: true
 
       - name: Log
         run: |
           echo "tag result:   ${{ needs.tag.outputs.TAG }}"
           echo "pkg version:  ${{ needs.tag.outputs.PKG_VER }}"
-          echo "relese notes: ${{ steps.get-notes.outputs.releaseNotes }}"
 
   #
   #
