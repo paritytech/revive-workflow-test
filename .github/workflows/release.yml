@@ -277,7 +277,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag_name: needs.tag.outputs.PKG_VER,
-                body: steps.get-notes.outputs.releaseNotes
+                body: steps.get-notes.outputs.releaseNotes,
                 draft: true
             });
 
