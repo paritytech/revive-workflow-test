@@ -37,6 +37,12 @@ jobs:
               exit 0
             fi
 
+          if [[ $CURRENT_TAG != "v"* ]];
+            then
+              echo "::notice::Tag $CURRENT_TAG is not a release tag, skipping the check in a PR";
+              exit 0
+            fi
+
           export PKG_VER=v$(cat Cargo.toml | grep -A 5 package] | grep version | cut -d '=' -f 2 | tr -d '"' | tr -d " ")
           echo "Current tag $CURRENT_TAG"
           echo "Package version $PKG_VER"
