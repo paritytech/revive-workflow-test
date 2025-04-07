@@ -112,14 +112,14 @@ def save_platform_json(platform_folder, asset_json, tag):
     # Remove any existing entry with the same path
     list_data['builds'] = [
         build for build in list_data['builds']
-        if build['path'] != asset_json['path']
+        if build['version'] != asset_json['version']
     ]
     # Add the new build
     list_data['builds'].append(asset_json)
 
     # Update releases
     version = asset_json['version']
-    list_data['releases'][version] = asset_json['path']
+    list_data['releases'][version] = f"{asset_json['name']}+{asset_json['longVersion']}"
 
     # Update latest release
     list_data['latestRelease'] = version
