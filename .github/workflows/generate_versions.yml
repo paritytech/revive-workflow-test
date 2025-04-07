@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.event.release.tag_name, 'llvm') == false
     environment: tags
+    # the token is needed for json_generator.py
     env:
-      # the token is needed for json_generator.py
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
@@ -22,6 +22,7 @@ jobs:
         with:
           repository: paritytech/resolc-bin
           path: resolc-bin
+          ref: alex-test
 
       - uses: actions/create-github-app-token@v1
         id: app-token
@@ -57,8 +58,9 @@ jobs:
           git config user.email "ci@parity.io"
           git config user.name "${APP_NAME}"
 
+          # git checkout -b alex-test
           git add .
           git commit -m "Update json"
-          git push origin main
+          git push origin alex-test
 
           echo "::notice::info.list files were successfully published to https://github.com/paritytech/resolc-bin"
