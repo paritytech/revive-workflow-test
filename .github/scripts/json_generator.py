@@ -36,7 +36,7 @@ def fetch_checksum_file(release_data):
     # Find the checksum.txt asset URL
     checksum_asset = None
     for asset in release_data['assets']:
-        if asset['name'] == 'checksum.txt':
+        if asset['name'] == 'checksums.txt':
             checksum_asset = asset
             break
 
